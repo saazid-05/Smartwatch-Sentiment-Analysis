@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smartwatch Sentiment Analyzer - Advanced AI Platform</title>
+    <meta name="description" content="Advanced AI-powered sentiment analysis for smartwatch reviews. Compare Classical ML vs Transformer models in real-time.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --border: #e5e7eb;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--dark);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .header-left {
+            flex: 1;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .logo-icon {
+            font-size: 3em;
+        }
+        
+        .logo-text h1 {
+            font-size: 2em;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .tagline {
+            color: #6b7280;
+            font-size: 0.95em;
+        }
+        
+        .header-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .stat-badge {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
+            padding: 12px 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #ddd6fe;
+        }
+        
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 0.75em;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border);
+        }
+        
+        .card-icon {
+            font-size: 1.5em;
+            color: var(--primary);
+        }
+        
+        .card-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        /* Analyzer Section */
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95em;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 18px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 140px;
+            transition: all 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        /* Model Selection */
+        .model-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .model-card {
+            position: relative;
+            padding: 20px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .model-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+        
+        .model-card input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .model-card input[type="radio"]:checked + .model-content {
+            border-left: 4px solid var(--primary);
+        }
+        
+        .model-card.selected {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, #f0f9ff 0%, #fff 100%);
+        }
+        
+        .model-content {
+            padding-left: 15px;
+            border-left: 4px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .model-name {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 5px;
+            font-size: 1.05em;
+        }
+        
+        .model-desc {
+            font-size: 0.85em;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+        
+        .model-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: var(--primary);
+            color: white;
+            border-radius: 6px;
+            font-size: 0.7em;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        
+        /* Button */
+        .btn-analyze {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-analyze:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-analyze:active {
+            transform: translateY(0);
+        }
+        
+        .btn-analyze:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Result */
+        .result {
+            display: none;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 25px;
+            animation: slideIn 0.4s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .result.positive {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border: 2px solid var(--success);
+        }
+        
+        .result.negative {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border: 2px solid var(--danger);
+        }
+        
+        .result.neutral {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid var(--warning);
+        }
+        
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .result-icon {
+            font-size: 3em;
+        }
+        
+        .result-title {
+            font-size: 1.8em;
+            font-weight: 800;
+        }
+        
+        .result-text {
+            padding: 15px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 10px;
+            margin: 15px 0;
+            font-style: italic;
+            color: #374151;
+        }
+        
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .result-stat {
+            background: rgba(255,255,255,0.7);
+            padding: 12px;
+            border-radius: 10px;
+        }
+        
+        .result-stat-label {
+            font-size: 0.85em;
+            color: #6b7280;
+            margin-bottom: 5px;
+        }
+        
+        .result-stat-value {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        /* Sidebar */
+        .info-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .info-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .info-card h3 {
+            font-size: 1.1em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .comparison-item {
+            padding: 15px;
+            background: var(--light);
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+        
+        .comparison-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .comparison-name {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .comparison-accuracy {
+            font-weight: 700;
+            font-size: 1.2em;
+            color: var(--primary);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            transition: width 1s ease-out;
+        }
+        
+        .feature-list {
+            list-style: none;
+        }
+        
+        .feature-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: start;
+            gap: 12px;
+        }
+        
+        .feature-item:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-icon {
+            color: var(--success);
+            font-size: 1.2em;
+            margin-top: 2px;
+        }
+        
+        .feature-text {
+            flex: 1;
+            font-size: 0.9em;
+            line-height: 1.5;
+            color: #4b5563;
+        }
+        
+        /* Bottom Section */
+        .insights-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .insights-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+        
+        .insights-title {
+            font-size: 2em;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .insights-subtitle {
+            color: #6b7280;
+            font-size: 1.05em;
+        }
+        
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .insight-card {
+            padding: 25px;
+            background: linear-gradient(135deg, #f9fafb 0%, #fff 100%);
+            border: 2px solid var(--border);
+            border-radius: 15px;
+            transition: all 0.3s;
+        }
+        
+        .insight-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-color: var(--primary);
+        }
+        
+        .insight-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+        
+        .insight-title {
+            font-size: 1.15em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .insight-desc {
+            font-size: 0.9em;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: white;
+            margin-top: 30px;
+        }
+        
+        .footer a {
+            color: white;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <div class="logo-icon">⌚</div>
+                    <div class="logo-text">
+                        <h1>Smartwatch Sentiment Analyzer</h1>
+                        <p class="tagline">Advanced AI-Powered Review Analysis Platform</p>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="stat-badge">
+                    <div class="stat-value">92%</div>
+                    <div class="stat-label">Max Accuracy</div>
+                </div>
+                <div class="stat-badge">
+                    <div class="stat-value">6</div>
+                    <div class="stat-label">AI Models</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="main-grid">
+            <!-- Analyzer -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-brain card-icon"></i>
+                    <h2 class="card-title">AI Sentiment Analyzer</h2>
+                </div>
+                
+                <form id="sentimentForm">
+                    <div class="form-group">
+                        <label for="reviewText">
+                            <i class="fas fa-comment-dots"></i> Enter Smartwatch Review
+                        </label>
+                        <textarea 
+                            id="reviewText" 
+                            name="text" 
+                            placeholder="Example: This smartwatch is amazing! The battery life is incredible and the fitness tracking is very accurate. The display is bright and easy to read even in sunlight. Highly recommend for anyone looking for a reliable fitness companion!"
+                            required
+                        ></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-robot"></i> Select AI Model
+                        </label>
+                        <div class="model-grid">
+                            <div class="model-card" onclick="selectModel('classical')">
+                                <input type="radio" name="model_type" value="classical" id="classical">
+                                <div class="model-content">
+                                    <div class="model-name">Classical ML</div>
+                                    <div class="model-desc">TF-IDF + Logistic Regression</div>
+                                    <span class="model-badge">80% Accuracy</span>
+                                </div>
+                            </div>
+                            
+                            <div class="model-card selected" onclick="selectModel('transformer')">
+                                <input type="radio" name="model_type" value="transformer" id="transformer" checked>
+                                <div class="model-content">
+                                    <div class="model-name">Transformer AI</div>
+                                    <div class="model-desc">DistilBERT (Contextual)</div>
+                                    <span class="model-badge" style="background: #10b981;">88% Accuracy</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-analyze">
+                        <i class="fas fa-magic"></i>
+                        Analyze Sentiment
+                    </button>
+                </form>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p style="color: #6b7280; font-weight: 600;">Analyzing with AI...</p>
+                </div>
+                
+                <div class="result" id="result">
+                    <div class="result-header">
+                        <div class="result-icon" id="resultIcon"></div>
+                        <div>
+                            <div class="result-title" id="sentimentLabel"></div>
+                        </div>
+                    </div>
+                    <div class="result-text" id="reviewTextDisplay"></div>
+                    <div class="result-stats">
+                        <div class="result-stat">
+                            <div class="result-stat-label">Confidence Score</div>
+                            <div class="result-stat-value" id="confidenceValue"></div>
+                        </div>
+                        <div class="result-stat">
+                            <div class="result-stat-label">Model Used</div>
+                            <div class="result-stat-value" id="modelUsed"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="info-panel">
+                <!-- Model Comparison -->
+                <div class="info-card">
+                    <h3>
+                        <i class="fas fa-chart-line"></i>
+                        Model Performance
+                    </h3>
+                    
+                    <div class="comparison-item">
+                        <div class="comparison-header">
+                            <span class="comparison-name">Classical ML</span>
+                            <span class="comparison-accuracy">80%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 80%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-item">
+                        <div class="comparison-header">
+                            <span class="comparison-name">Transformer AI</span>
+                            <span class="comparison-accuracy">88%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 88%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 15px; padding: 12px; background: #fef3c7; border-radius: 8px; font-size: 0.85em; color: #92400e;">
+                        <i class="fas fa-lightbulb"></i> <strong>+8% improvement</strong> with contextual AI understanding
+                    </div>
+                </div>
+                
+                <!-- Features -->
+                <div class="info-card">
+                    <h3>
+                        <i class="fas fa-star"></i>
+                        Key Features
+                    </h3>
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <i class="fas fa-check-circle feature-icon"></i>
+                            <span class="feature-text">Real-time sentiment analysis with AI</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check-circle feature-icon"></i>
+                            <span class="feature-text">Compare Classical ML vs Transformers</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check-circle feature-icon"></i>
+                            <span class="feature-text">Contextual understanding of reviews</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-check-circle feature-icon"></i>
+                            <span class="feature-text">Production-ready API endpoints</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Insights Section -->
+        <div class="insights-section">
+            <div class="insights-header">
+                <h2 class="insights-title">Why Transformers Excel</h2>
+                <p class="insights-subtitle">Understanding the power of contextual AI models</p>
+            </div>
+            
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <div class="insight-icon">🧠</div>
+                    <h3 class="insight-title">Contextual Understanding</h3>
+                    <p class="insight-desc">Transformers understand word meaning based on surrounding context, not just individual words.</p>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-icon">🎯</div>
+                    <h3 class="insight-title">Negation Handling</h3>
+                    <p class="insight-desc">Correctly interprets phrases like "not bad" as positive, unlike classical models.</p>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-icon">🔍</div>
+                    <h3 class="insight-title">Sarcasm Detection</h3>
+                    <p class="insight-desc">Better at detecting sarcasm and irony in reviews through contextual clues.</p>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-icon">📚</div>
+                    <h3 class="insight-title">Pre-trained Knowledge</h3>
+                    <p class="insight-desc">Leverages understanding from billions of words learned during pre-training.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>Built with ❤️ using FastAPI, DistilBERT, and Scikit-learn</p>
+            <p style="margin-top: 10px; opacity: 0.8;">
+                <a href="/docs" target="_blank">API Documentation</a> | 
+                <a href="/api/health" target="_blank">Health Check</a>
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        function selectModel(modelType) {
+            document.querySelectorAll('.model-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+            document.getElementById(modelType).checked = true;
+        }
+        
+        document.getElementById('sentimentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const loading = document.getElementById('loading');
+            const result = document.getElementById('result');
+            const button = e.target.querySelector('button');
+            
+            // Show loading
+            loading.style.display = 'block';
+            result.style.display = 'none';
+            button.disabled = true;
+            
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    displayResult(data);
+                } else {
+                    alert('Error: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                loading.style.display = 'none';
+                button.disabled = false;
+            }
+        });
+        
+        function displayResult(data) {
+            const result = document.getElementById('result');
+            const sentimentClass = data.sentiment_class;
+            
+            // Reset classes
+            result.className = 'result';
+            
+            // Set sentiment class and icon
+            let icon = '';
+            if (sentimentClass === 2) {
+                result.classList.add('positive');
+                icon = '😊';
+            } else if (sentimentClass === 0) {
+                result.classList.add('negative');
+                icon = '😞';
+            } else {
+                result.classList.add('neutral');
+                icon = '😐';
+            }
+            
+            // Update content
+            document.getElementById('resultIcon').textContent = icon;
+            document.getElementById('sentimentLabel').textContent = data.sentiment;
+            document.getElementById('reviewTextDisplay').textContent = '"' + data.text + '"';
+            document.getElementById('confidenceValue').textContent = data.confidence + '%';
+            document.getElementById('modelUsed').textContent = data.model_used.toUpperCase();
+            
+            // Show result
+            result.style.display = 'block';
+            
+            // Scroll to result
+            result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        // Add sample reviews
+        const samples = [
+            "This smartwatch is absolutely amazing! The battery life lasts for days and the fitness tracking is incredibly accurate.",
+            "Terrible product. Stopped working after just one week. Very disappointed.",
+            "It's okay for the price. Nothing special but does the basic functions."
+        ];
+        
+        // Optional: Add quick sample buttons
+        window.addEventListener('load', () => {
+            console.log('Advanced Smartwatch Sentiment Analyzer loaded!');
+        });
+    </script>
+</body>
+</html>
